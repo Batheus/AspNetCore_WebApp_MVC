@@ -1,16 +1,35 @@
-﻿using Alura.ListaLeitura.App.Repositorio;
+﻿using Alura.ListaLeitura.App.Negocio;
+using Alura.ListaLeitura.App.Repositorio;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Alura.ListaLeitura.App
 {
     public class Startup
     {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRouting();
+        }
+
         public void Configure(IApplicationBuilder app)
         {
-            app.Run(Roteamento);
+            var builder = new RouteBuilder(app);
+            builder.MapRoute("Livros/ParaLer", LivrosParaLer);
+            builder.MapRoute("Livros/Lendo", LivrosLendo);
+            builder.MapRoute("Livros/Lidos", LivrosLidos);
+            builder.MapRoute("Cadastro/NovoLivro/{nome}/{autor}", NovoLivroParaLer);
+            builder.MapRoute("Livros/Detalhes/{id:int}", ExibeDetalhes); // RouteConstraint -> id:int
+            var rotas = builder.Build();
+
+            app.UseRouter(rotas);
+            //app.Run(Roteamento);
         }
 
         public Task Roteamento(HttpContext context)
@@ -31,6 +50,25 @@ namespace Alura.ListaLeitura.App
 
             context.Response.StatusCode = 404;
             return context.Response.WriteAsync("Caminho inexistente");
+        }
+
+        public Task NovoLivroParaLer(HttpContext context)
+        {
+            var livro = new Livro()
+            {
+                Titulo = context.GetRouteValue("nome").ToString(),
+                Autor = context.GetRouteValue("autor").ToString()
+            };
+            var repo = new LivroRepositorioCSV();
+            repo.Incluir(livro);
+            return context.Response.WriteAsync("O livro foi adicionado com sucesso");
+        }
+        public Task ExibeDetalhes(HttpContext context)
+        {
+            int id = Convert.ToInt32(context.GetRouteValue("id"));
+            var repo = new LivroRepositorioCSV();
+            var livro = repo.Todos.First(l => l.Id == id); //linq
+            return context.Response.WriteAsync(livro.Detalhes());
         }
 
         public Task LivrosParaLer(HttpContext context)
