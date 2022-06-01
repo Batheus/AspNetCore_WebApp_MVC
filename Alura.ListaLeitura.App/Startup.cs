@@ -25,27 +25,6 @@ namespace Alura.ListaLeitura.App
             var rotas = builder.Build();
 
             app.UseRouter(rotas);
-            //app.Run(Roteamento);
         }
-
-        //public Task Roteamento(HttpContext context)
-        //{
-        //    var _repo = new LivroRepositorioCSV();
-        //    var caminhosAtendidos = new Dictionary<string, RequestDelegate>
-        //    {
-        //        { "/Livros/ParaLer", LivrosParaLer },
-        //        { "/Livros/Lendo", LivrosLendo },
-        //        { "/Livros/Lidos", LivrosLidos },
-        //    };
-
-        //    if (caminhosAtendidos.ContainsKey(context.Request.Path))
-        //    {
-        //        var metodo = caminhosAtendidos[context.Request.Path];
-        //        return metodo.Invoke(context);
-        //    }
-
-        //    context.Response.StatusCode = 404;
-        //    return context.Response.WriteAsync("Caminho inexistente");
-        //}
     }
 }
