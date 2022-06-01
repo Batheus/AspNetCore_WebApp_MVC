@@ -1,4 +1,4 @@
-﻿using Alura.ListaLeitura.App.Logica;
+﻿using Alura.ListaLeitura.App.MVC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,13 +15,8 @@ namespace Alura.ListaLeitura.App
         public void Configure(IApplicationBuilder app)
         {
             var builder = new RouteBuilder(app);
-            builder.MapRoute("Livros/ParaLer", LivrosLogica.LivrosParaLer);
-            builder.MapRoute("Livros/Lendo", LivrosLogica.LivrosLendo);
-            builder.MapRoute("Livros/Lidos", LivrosLogica.LivrosLidos);
-            builder.MapRoute("Livros/Detalhes/{id:int}", LivrosLogica.ExibeDetalhes); // RouteConstraint -> id:int
-            builder.MapRoute("Cadastro/NovoLivro/{nome}/{autor}", CadastroLogica.NovoLivroParaLer);
-            builder.MapRoute("Cadastro/NovoLivro", CadastroLogica.ExibeFormulario);
-            builder.MapRoute("Cadastro/Incluir", CadastroLogica.ProcessaFormulario);
+            builder.MapRoute("{classe}/{metodo}", RoteamentoPadrao.TratamentoPadrao);
+
             var rotas = builder.Build();
 
             app.UseRouter(rotas);
